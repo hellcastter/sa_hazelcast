@@ -15,7 +15,6 @@ def increment_with_optimistic_lock(client: hazelcast.HazelcastClient, map_name):
     my_map = client.get_map(map_name).blocking()
     key = "key"
     
-    # Initialize the value if it's absent
     my_map.put_if_absent(key, 0)
     
     for _ in range(10_000):
@@ -27,7 +26,6 @@ def increment_with_optimistic_lock(client: hazelcast.HazelcastClient, map_name):
                 break
 
 def run_clients():
-    # Create three separate Hazelcast clients
     client1 = hazelcast.HazelcastClient()
     client2 = hazelcast.HazelcastClient()
     client3 = hazelcast.HazelcastClient()
@@ -36,7 +34,6 @@ def run_clients():
     
     start_time = time.time()
 
-    # Start threads for the clients
     thread1 = threading.Thread(target=increment_with_optimistic_lock, args=(client1, map_name))
     thread2 = threading.Thread(target=increment_with_optimistic_lock, args=(client2, map_name))
     thread3 = threading.Thread(target=increment_with_optimistic_lock, args=(client3, map_name))
@@ -45,12 +42,10 @@ def run_clients():
     thread2.start()
     thread3.start()
 
-    # Wait for all threads to finish
     thread1.join()
     thread2.join()
     thread3.join()
 
-    # Retrieve the final value from the map
     my_map = client1.get_map(map_name).blocking()
     final_value = my_map.get("key")
     print(f"Final value for 'key': {final_value}")
@@ -58,7 +53,6 @@ def run_clients():
     end_time = time.time()
     print(f"Time taken: {end_time - start_time} seconds")
     
-    # Shutdown clients
     client1.shutdown()
     client2.shutdown()
     client3.shutdown()
