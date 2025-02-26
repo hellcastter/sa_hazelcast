@@ -29,24 +29,19 @@ def run_clients():
     client3 = HazelcastClient()
 
     queue_name = "bounded_queue"
-    
-    config = {
-        "max_size": 10
-    }
-    client1.get_queue(queue_name)
-    
+
     writer_thread = threading.Thread(target=writer, args=(client1, queue_name))
     
     reader_thread1 = threading.Thread(target=reader, args=(client2, queue_name))
     reader_thread2 = threading.Thread(target=reader, args=(client3, queue_name))
 
     writer_thread.start()
-    # reader_thread1.start()
-    # reader_thread2.start()
+    reader_thread1.start()
+    reader_thread2.start()
 
     writer_thread.join()
-    # reader_thread1.join()
-    # reader_thread2.join()
+    reader_thread1.join()
+    reader_thread2.join()
     
     queue = client1.get_queue(queue_name).blocking()
     queue.destroy()
