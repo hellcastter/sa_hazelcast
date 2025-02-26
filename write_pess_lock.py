@@ -19,7 +19,6 @@ def increment_with_lock(client, map_name):
         my_map.unlock(key)
 
 def run_clients():
-    # Створення трьох окремих клієнтів
     client1 = hazelcast.HazelcastClient()
     client2 = hazelcast.HazelcastClient()
     client3 = hazelcast.HazelcastClient()
